@@ -120,7 +120,7 @@ class Model():
         tf.summary.scalar('loss', self._cost)
 
 
-        print(reuse)
+        # print(reuse)
         if reuse is None:
             #tf.summary.scalar('auc', self.auc)
             self.global_step = tf.Variable(0, name='global_step', trainable=False)

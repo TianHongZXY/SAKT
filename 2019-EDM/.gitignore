@@ -1,0 +1,4 @@
+/homo_venv/*
+/.idea/*
+/*.pyc
+/*.csv

@@ -13,10 +13,12 @@ from math import sqrt
 from sklearn import metrics
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import r2_score
+
 def str2bool(s):
     if s not in {'False', 'True'}:
         raise ValueError('Not a valid boolean string')
     return s == 'True'
+
 def read_data_from_csv_file(fileName_train, fileName_test, max_num_problems):
     inputs = []
     targets = []
@@ -33,20 +35,21 @@ def read_data_from_csv_file(fileName_train, fileName_test, max_num_problems):
     i = 0
 
     n=int(len(rows))
-    print(n)
+    # print(n)
     with open(fileName_test, "r") as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
         for row in reader:
-            print(row)
+            # print(row)
             rows.append(row)
     index=0
     while(index < len(rows)-1):
-        problems_num = int(len(rows[index+1]))
+        problems_num = int(len(rows[index+1])) - 1
 
         if(problems_num <= 2):
             index += 3
             continue
-
+        rows[index+1] = rows[index+1][:-1]
+        rows[index+2] = rows[index+2][:-1]
         tmp_max_skill = max(map(int, rows[index+1]))
         if(tmp_max_skill > max_skill_num):
             max_skill_num = tmp_max_skill
@@ -98,9 +101,10 @@ parser.add_argument('--pos', default=False, type=bool)
 
 args = parser.parse_args()
 model_name = "/home/pande103/2016-EDM-master/DKT"
-args.train_data_path = "./data/"+args.dataset+"/"+args.dataset+"_train.csv"
-args.test_data_path= "./data/"+args.dataset+"/"+args.dataset+"_test.csv"
-
+# args.train_data_path = "./data/"+args.dataset+"/"+args.dataset+"_train.csv"
+# args.test_data_path= "./data/"+args.dataset+"/"+args.dataset+"_test.csv"
+args.train_data_path = '/Users/tianhongzxy/Documents/GitHub/DeepKnowledgeTracing/data/assistments/builder_train.csv'
+args.test_data_path= '/Users/tianhongzxy/Documents/GitHub/DeepKnowledgeTracing/data/assistments/builder_test.csv'
 train_students,test_students, max_num_problems, max_skill_num = read_data_from_csv_file(args.train_data_path, args.test_data_path,args.num_steps)
 
 config = tf.ConfigProto()
@@ -185,7 +189,7 @@ def run_epoch(session, m, students,epoch, eval_op, verbose=False, is_training=Tr
     return rmse, auc
 
 num_batch=len(train_students)/args.batch_size
-f_log= open("auc"+"_"+args.dataset+"_"+str(args.hidden_units)+"_"+str(args.num_heads)+"_"+str(args.num_steps)+"_"+str(args.num_blocks)+".csv", 'w+')
+# f_log= open("auc"+"_"+args.dataset+"_"+str(args.hidden_units)+"_"+str(args.num_heads)+"_"+str(args.num_steps)+"_"+str(args.num_blocks)+".csv", 'w+')
 max_auc=0
 for epoch in range(1, args.num_epochs + 1):
 
@@ -202,7 +206,7 @@ for epoch in range(1, args.num_epochs + 1):
         if auc>max_auc:
 
             print("Epoch: %d Test Metrics:\n  \t auc: %.3f \n" % (epoch+1, auc))
-            f_log.write(st+","+str(auc)+"\n")
+            # f_log.write(st+","+str(auc)+"\n")
         t0 = time.time()
 
 
